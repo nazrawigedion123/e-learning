@@ -1,0 +1,65 @@
+from django.contrib.auth.models import User
+from django.db import models
+
+# Create your models here.
+
+class Course(models.Model):
+    title = models.CharField(max_length=200)
+    description= models.TextField(blank=True,null=True)
+    users= models.ManyToManyField(User, blank=True, )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+class Chapter(models.Model):
+    course=models.ForeignKey(Course, on_delete=models.CASCADE)
+    title=models.CharField(max_length=200)
+    description= models.TextField(blank=True,null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+class Lesson(models.Model):
+    chapter=models.ForeignKey(Chapter,on_delete=models.CASCADE)
+    title=models.CharField(max_length=200)
+    description= models.TextField(null=True,blank=True)
+    video=models.FileField(upload_to='video/',blank=True,null=True)
+    pdf=models.FileField(upload_to='pdf/',blank=True,null=True)
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+class Quiz(models.Model):
+    lesson=models.ForeignKey(Lesson,on_delete=models.CASCADE)
+    title=models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+class Question(models.Model):
+    quiz=models.ForeignKey(Quiz,on_delete=models.CASCADE)
+    question=models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.question
+class Option(models.Model):
+    question=models.ForeignKey(Question,on_delete=models.CASCADE)
+    option=models.TextField()
+    is_answer=models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.option
+class Progress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    completed_lessons = models.ManyToManyField(Lesson, blank=True)
+    quiz_scores = models.JSONField(default=dict)  # Store scores as a dictionary {quiz_id: score}
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.course.title} Progress"
+
