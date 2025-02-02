@@ -40,10 +40,18 @@ class ChapterSerializers(serializers.ModelSerializer):
 
 class CourseSerializers(serializers.ModelSerializer):
     chapters = ChapterSerializers(many=True, read_only=True, source="chapter_set")
+    is_enrolled = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
         fields = '__all__'
+
+    def get_is_enrolled(self, obj):
+        # Ensure the request object is available in the context
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return request.user in obj.users.all()
+        return False
 
 class ProgressSerializers(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
