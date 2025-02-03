@@ -46,7 +46,10 @@ def create_course(request):
 @api_view(['PUT'])
 @permission_classes([IsAdminOrInstructorOwner])
 def update_course(request,pk):
-    course=Course.objects.get(pk=pk)
+    try:
+        course = Course.objects.get(pk=pk)
+    except Course.DoesNotExist:
+        return Response({"error": "course not found"}, status=status.HTTP_404_NOT_FOUND)
     data=request.data
 
 
@@ -61,12 +64,28 @@ def update_course(request,pk):
 
 @api_view(['DELETE'])
 @permission_classes([IsAdminOrInstructorOwner])
-def delete_course(request,pk):
-
+def delete_course(request, pk):
+    """
+    Delete a course by ID.
+    Only admins or the instructor who owns the course can delete it.
+    """
     try:
-        course=Course.objects.get(pk=pk)
+        course = Course.objects.get(pk=pk)
     except Course.DoesNotExist:
-        return Response({"error":"Course not found"},status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {"error": "Course not found"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # Check if the user has permission to delete the course
+    # This is handled by the `IsAdminOrInstructorOwner` permission class,
+    # but you can add additional checks here if needed.
+
+    course.delete()
+    return Response(
+        {"message": "Course was successfully deleted"},
+        status=status.HTTP_204_NO_CONTENT
+    )
 
 
 @api_view(['POST'])
