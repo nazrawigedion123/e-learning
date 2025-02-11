@@ -7,14 +7,14 @@ class OptionSerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 class QuestionSerializers(serializers.ModelSerializer):
-    options = OptionSerializers(many=True, read_only=True, source="option_set")
+    options = OptionSerializers(many=True, read_only=True,)
 
     class Meta:
         model = Question
         fields = '__all__'
 
 class QuizSerializers(serializers.ModelSerializer):
-    questions = QuestionSerializers(many=True, read_only=True, source="question_set")
+    questions = QuestionSerializers(many=True, read_only=True,)
 
     class Meta:
         model = Quiz
@@ -32,14 +32,16 @@ class LessonSerializers(serializers.ModelSerializer):
         return QuizSerializers(quiz).data if quiz else None
 
 class ChapterSerializers(serializers.ModelSerializer):
-    lessons = LessonSerializers(many=True, read_only=True, source="lesson_set")
+    lessons = LessonSerializers(many=True, read_only=True, )
 
     class Meta:
         model = Chapter
         fields = '__all__'
 
+
+
 class CourseSerializers(serializers.ModelSerializer):
-    chapters = ChapterSerializers(many=True, read_only=True, source="chapter_set")
+    chapters = ChapterSerializers(many=True, read_only=True, )
     is_enrolled = serializers.SerializerMethodField()
 
     class Meta:
@@ -52,6 +54,7 @@ class CourseSerializers(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             return request.user in obj.users.all()
         return False
+
 
 class ProgressSerializers(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)

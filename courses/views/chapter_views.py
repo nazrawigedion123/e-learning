@@ -14,7 +14,6 @@ def get_chapters(request, pk):
     Retrieve all chapters for a specific course.
     Only authenticated users enrolled in the course can access this endpoint.
     """
-    print(request.user)
     course = get_object_or_404(Course, pk=pk)
     if request.user not in course.users.all() and request.user.is_staff:
         return Response({"error": "You are not enrolled in this course"}, status=status.HTTP_403_FORBIDDEN)
@@ -41,12 +40,11 @@ def get_chapter(request, pk, chapter_pk):
 @api_view(['POST'])
 @permission_classes([IsAdminOrInstructorOwner])
 def create_chapter(request, pk):
-    """
-    Create a new chapter for a course.
-    Only admins or the instructor who owns the course can create a chapter.
-    """
     course = get_object_or_404(Course, pk=pk)
-    serializer = ChapterSerializers(data=request.data, context={'course': course})
+    data = request.data.copy()
+    data['course'] = course.pk  # Explicitly include the course ID
+
+    serializer = ChapterSerializers(data=data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
