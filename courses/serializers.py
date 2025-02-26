@@ -32,6 +32,7 @@ class LessonSerializers(serializers.ModelSerializer):
         return QuizSerializers(quiz).data if quiz else None
 
 class ChapterSerializers(serializers.ModelSerializer):
+
     lessons = LessonSerializers(many=True, read_only=True, )
 
     class Meta:
@@ -41,7 +42,7 @@ class ChapterSerializers(serializers.ModelSerializer):
 
 
 class CourseSerializers(serializers.ModelSerializer):
-    chapters = ChapterSerializers(many=True, read_only=True, )
+
     is_enrolled = serializers.SerializerMethodField()
 
     class Meta:
