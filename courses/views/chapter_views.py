@@ -15,7 +15,7 @@ def get_chapters(request, pk):
     Only authenticated users enrolled in the course can access this endpoint.
     """
     course = get_object_or_404(Course, pk=pk)
-    if request.user not in course.users.all() and request.user.is_staff:
+    if request.user not in course.users.all() and request.user != course.instructor and request.user.is_staff:
         return Response({"error": "You are not enrolled in this course"}, status=status.HTTP_403_FORBIDDEN)
 
     chapters = course.chapters.all()
@@ -23,14 +23,15 @@ def get_chapters(request, pk):
     return Response(serializer.data)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsClient])
 def get_chapter(request, pk, chapter_pk):
     """
     Retrieve a specific chapter for a course.
     Only authenticated users enrolled in the course can access this endpoint.
     """
     course = get_object_or_404(Course, pk=pk)
-    if request.user not in course.users.all():
+    if request.user not in course.users.all() and request.user != course.instructor and not request.user.is_staff:
+
         return Response({"error": "You are not enrolled in this course"}, status=status.HTTP_403_FORBIDDEN)
 
     chapter = get_object_or_404(Chapter, pk=chapter_pk, course=course)

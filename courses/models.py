@@ -32,7 +32,7 @@ class Lesson(models.Model):
     chapter=models.ForeignKey(Chapter,related_name='lessons',on_delete=models.CASCADE)
     title=models.CharField(max_length=200)
     description= models.TextField(null=True,blank=True)
-    video=models.FileField(upload_to='video/',blank=True,null=True)
+    video=models.FileField(upload_to='video/', default='video/examples.mp4',blank=True,null=True)
     pdf=models.FileField(upload_to='pdf/',blank=True,null=True)
     order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
