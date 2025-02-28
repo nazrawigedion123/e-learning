@@ -1,11 +1,17 @@
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.generics import get_object_or_404
+from tutorial.quickstart.serializers import UserSerializer
+
 from ..models import Course, Chapter
 from ..serializers import ChapterSerializers,CourseSerializers
 from user.permission import IsAdminOrInstructorOwner,IsClient
+
+
+
 
 @api_view(['GET'])
 @permission_classes([IsClient])
@@ -15,8 +21,12 @@ def get_chapters(request, pk):
     Only authenticated users enrolled in the course can access this endpoint.
     """
     course = get_object_or_404(Course, pk=pk)
-    if request.user not in course.users.all() and request.user != course.instructor and request.user.is_staff:
-        return Response({"error": "You are not enrolled in this course"}, status=status.HTTP_403_FORBIDDEN)
+    if not (request.user in course.users.all() or request.user == course.instructor or request.user.is_staff):
+        return Response({"error": "You are not enrolled in this course and are not the instructor or an admin"},
+                        status=status.HTTP_403_FORBIDDEN)
+
+
+
 
     chapters = course.chapters.all()
     serializer = ChapterSerializers(chapters, many=True)
@@ -30,9 +40,10 @@ def get_chapter(request, pk, chapter_pk):
     Only authenticated users enrolled in the course can access this endpoint.
     """
     course = get_object_or_404(Course, pk=pk)
-    if request.user not in course.users.all() and request.user != course.instructor and not request.user.is_staff:
 
-        return Response({"error": "You are not enrolled in this course"}, status=status.HTTP_403_FORBIDDEN)
+    if not (request.user in course.users.all() or request.user == course.instructor or request.user.is_staff):
+        return Response({"error": "You are not enrolled in this course "},
+                        status=status.HTTP_403_FORBIDDEN)
 
     chapter = get_object_or_404(Chapter, pk=chapter_pk, course=course)
     serializer = ChapterSerializers(chapter, many=False)

@@ -1,4 +1,7 @@
 from rest_framework import permissions
+from rest_framework.permissions import BasePermission
+
+
 class IsAdminOrInstructorOwner(permissions.BasePermission):
     """
     Custom permission to allow only admin users or the instructor who created the course
@@ -35,3 +38,4 @@ class IsClient(permissions.BasePermission):
 
         # Deny by default
         return False
+

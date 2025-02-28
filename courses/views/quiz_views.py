@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from ..models import Lesson, Course,Quiz
-from backend.user.permission import IsClient, IsAdminOrInstructorOwner
+from user.permission import IsClient, IsAdminOrInstructorOwner
 from ..serializers import QuizSerializers
 
 
@@ -17,8 +17,9 @@ def get_quiz(request,pk,chapter_pk,lesson_pk,quiz_pk):
     Get a specific quiz
     """
     course = get_object_or_404(Course, pk=pk)
-    if request.user not in course.users.all() and request.user != course.instructor and not request.user.is_staff:
-        return Response({"response":"You are not enrolled in this course"},status=status.HTTP_403_FORBIDDEN)
+    if not (request.user in course.users.all() or request.user == course.instructor or request.user.is_staff):
+        return Response({"error": "You are not enrolled in this course "},
+                        status=status.HTTP_403_FORBIDDEN)
     quiz=get_object_or_404(Quiz,pk=quiz_pk)
     serializer= QuizSerializers(quiz,many=False)
     return Response(serializer.data)

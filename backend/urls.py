@@ -24,5 +24,6 @@ urlpatterns = [
     path('api/courses/',include("courses.urls.course_urls"),name="courses"),
     path('api/course/',include("courses.urls.chapter_urls"),name="chapters"),
     path('api/course/',include("courses.urls.lesson_urls"),name="lessons"),
+    path('api/course/',include("courses.urls.quiz_urls"),name="quizzes"),
     path('api/user/',include("user.urls"),name="user"),
 ]
