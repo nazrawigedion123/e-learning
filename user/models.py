@@ -18,7 +18,7 @@ class User(AbstractUser):
         'auth.Group',
         verbose_name='groups',
         blank=True,
-        null=True,
+
         help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
         related_name='custom_user_set',  # Unique related_name
         related_query_name='user',
@@ -27,7 +27,7 @@ class User(AbstractUser):
         'auth.Permission',
         verbose_name='user permissions',
         blank=True,
-        null=True,
+
         help_text='Specific permissions for this user.',
         related_name='custom_user_set',  # Unique related_name
         related_query_name='user',
