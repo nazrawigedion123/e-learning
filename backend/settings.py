@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'courses.apps.CoursesConfig',
     'user.apps.UserConfig',
-    'rest_framework'
+    'rest_framework',
+    'drf_yasg',
+
 ]
 
 MIDDLEWARE = [
@@ -113,6 +115,9 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+
+
 
 ROOT_URLCONF = 'backend.urls'
 
