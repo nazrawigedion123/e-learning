@@ -31,7 +31,7 @@ class CreateOrderService:
     def createOrder(self):
         title = self.req["title"];
         amount = self.req["amount"];
-        applyFabricTokenResult = ApplyFabricTokenService.ApplyFabricTokenService(self.BASE_URL, self.fabricAppId,
+        applyFabricTokenResult = ApplyFabricTokenService(self.BASE_URL, self.fabricAppId,
                                                                                  self.appSecret, self.merchantAppId)
         result = applyFabricTokenResult.applyFabricToken()
         fabricToken = result["token"]

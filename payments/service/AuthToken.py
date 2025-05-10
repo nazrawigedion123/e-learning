@@ -19,7 +19,7 @@ class AuthTokenService:
         """
         print("Token:", app_token)
         # Step 1: Apply Fabric Token
-        apply_fabric_token_service = ApplyFabricTokenService.ApplyFabricTokenService(self.BASE_URL, self.fabricAppId,
+        apply_fabric_token_service =ApplyFabricTokenService(self.BASE_URL, self.fabricAppId,
                                                                                      self.appSecret, self.merchantAppId)
         fabric_token_response = apply_fabric_token_service.applyFabricToken()
         fabric_token = fabric_token_response["token"]  # Extract the fabric token from the response
