@@ -17,4 +17,4 @@ jobs:
         server: ftp.bdnsys.com
         username: nazri_bdn@bdnsys.com
         password: ${{ secrets.ftp_bdn_password }}
-        server-dir: /elearning/
+        server-dir: /elearning.bdnsys.com/
